@@ -1,10 +1,10 @@
-<!--- test two -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASHMIDI v1.2</title>
+    <title>NASHMIDI</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,7 +169,7 @@
             100% { transform: translateX(-50%) scale(1); }
         }
         
-        @keyframes countdown-pop {
+@keyframes countdown-pop {
             0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
             20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
             80% { opacity: 1; }
@@ -177,13 +177,13 @@
         }
 
         @keyframes key-guidance-glow {
-            0%, 100% { box-shadow: 0 0 6px 2px var(--guidance-color), inset 0 0 5px 1px var(--guidance-color); }
-            50% { box-shadow: 0 0 12px 4px var(--guidance-color), inset 0 0 10px 2px var(--guidance-color); }
+            0%, 100% { box-shadow: 0 0 calc(6px + var(--guidance-dynamic-size, 0px)) calc(2px + var(--guidance-dynamic-size, 0px)) var(--guidance-color), inset 0 0 calc(5px + var(--guidance-dynamic-size, 0px)) calc(1px + var(--guidance-dynamic-size, 0px)) var(--guidance-color); }
+            50% { box-shadow: 0 0 calc(12px + var(--guidance-dynamic-size, 0px) * 1.5) calc(4px + var(--guidance-dynamic-size, 0px) * 1.5) var(--guidance-color), inset 0 0 calc(10px + var(--guidance-dynamic-size, 0px) * 1.5) calc(2px + var(--guidance-dynamic-size, 0px) * 1.5) var(--guidance-color); }
         }
         /* MODIFIED: Fixed outline clipping by using only inset shadow */
         @keyframes key-guidance-outline {
-            0%, 100% { box-shadow: inset 0 0 0 2px var(--guidance-color); }
-            50% { box-shadow: inset 0 0 0 3px var(--guidance-color); }
+            0%, 100% { box-shadow: inset 0 0 0 calc(2px + var(--guidance-dynamic-size, 0px)) var(--guidance-color); }
+            50% { box-shadow: inset 0 0 0 calc(3px + var(--guidance-dynamic-size, 0px) * 1.5) var(--guidance-color); }
         }
         /* MODIFIED: Animation now uses a dynamic variable for the glow color */
         @keyframes kb-key-press {
@@ -242,6 +242,74 @@
         #aside-scroll-wrapper::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 4px; }
         #aside-scroll-wrapper::-webkit-scrollbar-thumb:hover { background-color: var(--text-light-color); }
         
+        /* --- START OF ADDED CODE --- */
+        #settings-search-container {
+            position: relative;
+            padding: 0 0 15px 0;
+            flex-shrink: 0;
+        }
+        #settings-search-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 30px 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--piano-bg);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            outline: none;
+            transition: border-color 0.2s, background-color 0.3s;
+        }
+        #settings-search-input:focus {
+            border-color: var(--accent-color);
+        }
+        
+        /* --- START OF ADDED CODE --- */
+        /* Hides the default gray 'x' clear button in browsers like Chrome/Edge */
+        #settings-search-input::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+            display: none;
+        }
+        /* --- END OF ADDED CODE --- */
+
+        body.dark-mode #settings-search-input {
+            background-color: var(--dark-aside-bg);
+        }
+
+        #settings-search-clear {
+            position: absolute;
+            top: 40%;
+            right: 10px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            line-height: 1;
+            color: var(--text-light-color);
+            padding: 2px 5px;
+            display: none; /* Hidden by default */
+        }
+
+        .is-hidden {
+            display: none !important;
+            /* Using !important to override other display properties like flex/grid */
+        }
+        
+        #search-no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light-color);
+        }
+
+        /* When searching, force all tabs to be visible */
+        aside.is-searching .tab-content {
+            display: flex;
+        }
+        /* --- END OF ADDED CODE --- */
+        
+
         #app-container.game-mode-active aside {
             width: 0; opacity: 0; padding: 0;
             border-left: none; overflow: hidden;
@@ -413,10 +481,15 @@
         
         .settings-list { list-style: none; padding: 0; margin: 0; font-size: 0.9em; }
         .settings-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items:center; padding: 5px 0; transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out; overflow: hidden; max-height: 50px;}
-        .settings-list li.sub-item-hidden { max-height: 0; opacity: 0; padding: 0; margin: 0; pointer-events: none;}
+        
+        /* --- START OF EDITED CODE --- */
+        .settings-list li.sub-item-hidden { max-height: 0; opacity: 0; padding: 0 !important; margin: 0 !important; pointer-events: none; border-width: 0;}
+        /* --- END OF EDITED CODE --- */
+
         .settings-list span { color: var(--text-light-color); }
         .settings-list label, .keybind-item label { flex-grow: 1; }
         .settings-list .mini-section-header { color: var(--text-color); font-weight: 600; font-size: 0.8em; text-transform: uppercase; padding: 15px 0 5px; display: block; border-bottom: 1px solid var(--border-color); margin-bottom: 5px; width: 100%; transition: border-color 0.3s, color 0.3s; cursor: pointer; user-select: none; }
+
         .settings-list .mini-section-header:first-child { padding-top: 0; }
         /* NEW: Toggle icon for collapsible mini-sections */
         .settings-list .mini-section-header .toggle-icon { display: inline-block; width: 1em; font-family: monospace; font-weight: bold; }
@@ -645,14 +718,52 @@
         .midipack-header {
             padding: 10px 12px;
             cursor: pointer;
-            background-color: #f8fafd;
-            transition: background-color 0.2s, background-image 0.3s;
+            /* REMOVED: background-color: #f8fafd; */
+            /* MODIFIED: Added filter to the transition */
+            transition: background-color 0.2s, background-image 0.3s, filter 0.2s;
             user-select: none;
             position: relative;
         }
         .midipack-header:hover {
-            background-color: #f0f3f7;
+            /* MODIFIED: Changed hover effect to a filter */
+            filter: brightness(0.9);
+            background-color: transparent; /* This is needed to prevent theme overrides */
         }
+        /* --- START OF ADDED CODE --- */
+        /* Text color overrides for light text on a dark background */
+        .midipack-header.light-text .midipack-title,
+        .midipack-header.light-text .midipack-author-list,
+        .midipack-header.light-text strong {
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .midipack-header.light-text,
+        .midipack-header.light-text .midipack-description {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* --- START OF ADDED CODE --- */
+        /* Specific overrides for the meta area on dark headers */
+        .midipack-header.light-text .midipack-meta {
+            color: rgba(255, 255, 255, 0.9);
+            border-top-color: rgba(255, 255, 255, 0.2);
+        }
+        /* --- END OF ADDED CODE --- */
+
+        /* Text color overrides for dark text on a light background */
+        .midipack-header.dark-text,
+        .midipack-header.dark-text .midipack-description {
+            color: rgba(30, 32, 41, 0.85);
+        }
+
+        /* --- START OF ADDED CODE --- */
+        /* Specific overrides for the meta area on light headers */
+        .midipack-header.dark-text .midipack-meta {
+            color: rgba(30, 32, 41, 0.9);
+            border-top-color: rgba(0, 0, 0, 0.08);
+        }
+        /* --- END OF ADDED CODE --- */
+
         .midipack-title {
             font-weight: 600;
             font-size: 0.95em;
@@ -661,16 +772,44 @@
         .midipack-description {
             font-size: 0.8em;
             color: var(--text-light-color);
-            margin: 2px 0 0 0;
+            /* MODIFIED: Increased top margin for more padding */
+            margin-top: 8px;
         }
+        /* --- START OF EDIT --- */
+        /* ADDED: New rules for author and genre text styling */
+        .midipack-author, .midipack-genre {
+            font-size: 0.8em;
+            color: var(black);
+            /* MODIFIED: Reduced top margin for less padding */
+            margin-top: 4px; 
+        }
+        
+        .midipack-author-list {
+            /* This is the element that will have the overflow logic applied */
+            display: inline;
+            /* MODIFIED: Changed from bold to normal weight */
+            font-weight: 400;
+            color: var(black);
+        }
+
+        /* --- START OF MODIFICATION --- */
         .midipack-meta {
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4px 12px;
             align-items: center;
             font-size: 0.8em;
-            color: var(--text-light-color);
             margin-top: 8px;
+            /* MODIFIED: Padding is now on all sides */
+            padding: 8px 12px;
+            /* MODIFIED: Border color is now set by context rules */
+            border-top: 1px solid;
+            /* ADDED: Lighter background overlay */
+            background-color: rgba(255, 255, 255, 0.1);
         }
+        /* --- END OF MODIFICATION --- */
+
         .difficulty-stars {
             color: #f5c542;
             letter-spacing: 1px;
@@ -1068,14 +1207,152 @@
             padding: 6px 16px;
             font-size: 0.9em;
         }
-        #tutorial-prev-btn {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-        }
-         #tutorial-prev-btn:hover {
+#tutorial-prev-btn:hover {
             background-color: var(--piano-bg);
             border-color: var(--accent-color);
+        }
+
+        /* --- ADDED: Modal Tab Styles --- */
+        .modal-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+        .modal-tab-btn {
+            padding: 8px 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            color: var(--text-light-color);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .modal-tab-btn:hover {
+            color: var(--text-color);
+        }
+        .modal-tab-btn.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            font-weight: 600;
+        }
+        .modal-tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-tab-content.active {
+            display: flex;
+        }
+
+
+        /* --- NEW: Revised Modal Styles --- */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-section {
+            background-color: var(--piano-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        body.dark-mode .modal-section {
+             background-color: var(--dark-aside-bg);
+        }
+        .modal-section h4 {
+            margin: 0 0 H4px 0;
+            font-size: 0.8em;
+            color: var(--text-light-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .modal-section .setting-item {
+             display: grid;
+             grid-template-columns: minmax(90px, 1fr) 2fr;
+             gap: 15px;
+             align-items: center;
+             padding: 8px 0;
+        }
+         .modal-section .setting-item label {
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        .modal-body select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            font-size: 0.9em;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--app-bg);
+            color: var(--text-color);
+            -webkit-appearance: none; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233d4a5c'%3E%3Cpath d='M7,10L12,15L17,10H7Z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        body.dark-mode .modal-body select {
+            background-color: var(--dark-piano-bg);
+            border-color: var(--dark-border-color);
+            color: var(--dark-text-color);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23c0caf5'%3E%3Cpath d='M7,10L12,15L17,10H7Z'/%3E%3C/svg%3E");
+        }
+        .control-with-value {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+        .control-with-value input[type="range"] { flex-grow: 1; }
+        .control-with-value span {
+            min-width: 45px;
+            text-align: right;
+            font-size: 0.9em;
+            color: var(--text-light-color);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .segmented-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-radius: 6px;
+            background-color: var(--app-bg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            padding: 2px;
+            width: 100%;
+        }
+        body.dark-mode .segmented-control {
+             background-color: var(--dark-piano-bg);
+        }
+        .segmented-control button {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            color: var(--text-light-color);
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 4px;
+        }
+        .segmented-control button.active {
+            background-color: var(--accent-color);
+            color: #fff;
+            font-weight: 600;
         }
 
 
@@ -1168,6 +1445,12 @@
                     <svg viewBox="0 0 24 24"><path d="M15,7.5V2H9v5.5l3,3L15,7.5z M7.5,9H2v6h5.5l3-3L7.5,9z M9,16.5V22h6v-5.5l-3-3L9,16.5z M16.5,9l-3,3l3,3H22V9H16.5z"/></svg>
                 </button>
             </div>
+            <!-- --- START OF ADDED CODE --- -->
+            <div id="settings-search-container">
+                <input type="search" id="settings-search-input" placeholder="Search settings...">
+                <button id="settings-search-clear" title="Clear search">&times;</button>
+            </div>
+            <!-- --- END OF ADDED CODE --- -->
             <div id="aside-scroll-wrapper">
                 <div id="tab-content-general" class="tab-content active">
                     <div class="panel drop-zone">
@@ -1223,12 +1506,20 @@
                             </div>
                         </div>
                     </div>
-                    <div id="keybind-settings-panel" class="panel">
+<div id="keybind-settings-panel" class="panel">
                         <h3 class="panel-header"><span class="toggle-icon">[-]</span>Keybind Settings</h3>
                         <div class="panel-content">
                             <div class="panel-content-inner">
                                 <div id="keybind-settings-list">
                                     </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h3 class="panel-header"><span class="toggle-icon">[-]</span>Support NASHqp</h3>
+                        <div class="panel-content">
+                            <div class="panel-content-inner" style="padding:0;">
+                                <iframe id='kofiframe' src='https://ko-fi.com/nashqp/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;background:#f9f9f9;' height='712' title='nashqp'></iframe>
                             </div>
                         </div>
                     </div>
@@ -1312,6 +1603,7 @@
                                  <ul class="settings-list">
                                     <li class="mini-section-header"><span class="toggle-icon">[-]</span>Guidance Mode</li>
                                     <li><label for="guidance-mode-toggle">Enable Guidance Mode</label><input type="checkbox" id="guidance-mode-toggle" class="toggle"></li>
+                                    <li><label for="guidance-pre-duration-slider">Guidance Pre-Duration (s)</label><input type="range" id="guidance-pre-duration-slider" min="0.1" max="5" value="1.5" step="0.1"></li>
                                     <li>
                                         <label for="guidance-style-select">Guidance Style</label>
                                         <select id="guidance-style-select">
@@ -1321,6 +1613,8 @@
                                     </li>
                                     <li> <label for="guidance-color-input">Guidance Color</label> <input type="color" id="guidance-color-input" data-variable="--guidance-color" data-dark-variable="--dark-guidance-color" value="#5e81f4"> </li>
                                     <li><label for="guidance-opacity-slider">Guidance Opacity</label><input type="range" id="guidance-opacity-slider" min="10" max="100" value="100" step="5"></li>
+                                    <li><label for="guidance-dynamic-sizing-toggle">Enable Dynamic Sizing</label><input type="checkbox" id="guidance-dynamic-sizing-toggle" class="toggle"></li>
+                                    <li><label for="guidance-max-size-slider">Dynamic Size Multiplier</label><input type="range" id="guidance-max-size-slider" min="1" max="15" value="5" step="1"></li>
                                     <li><label for="pulse-opacity-slider">Pulse Opacity</label><input type="range" id="pulse-opacity-slider" min="10" max="100" value="100" step="5"></li>
                                     <li class="mini-section-header" style="margin-top:10px;"><span class="toggle-icon">[-]</span>Grid</li>
                                     <li><label for="grid-mode-toggle">Enable Column Grid</label><input type="checkbox" id="grid-mode-toggle" class="toggle"></li>
@@ -1392,11 +1686,26 @@
 
                                     <!-- MODIFIED: Applied the 'full-width-control' class for the new layout -->
 
-                                    <li class="full-width-control" style="padding-bottom: 0px;">
+				    <li class="full-width-control" style="padding-bottom: 0px;">
                                         <label for="kb-game-lanes-slider">Number of Lanes</label>
                                         <div class="control-container">
                                             <input type="range" id="kb-game-lanes-slider" min="4" max="10" value="4" step="1">
                                             <span id="kb-lanes-value-display">4</span>
+                                        </div>
+                                    </li>
+
+                                    <li class="full-width-control">
+                                        <label for="kb-game-density-mode-select">Note Density Mode</label>
+                                        <select id="kb-game-density-mode-select">
+                                            <option value="beat" selected>Beat Priority</option>
+                                            <option value="full">Full (All Notes)</option>
+                                        </select>
+                                    </li>
+                                    <li class="full-width-control" id="kb-chord-simplification-li" style="padding-bottom: 0px;">
+                                        <label for="kb-chord-simplification-slider">Chord Simplification</label>
+                                        <div class="control-container">
+                                            <input type="range" id="kb-chord-simplification-slider" min="10" max="100" value="100" step="1">
+                                            <span id="kb-chord-simplification-display">100%</span>
                                         </div>
                                     </li>
 
@@ -1438,7 +1747,7 @@
                                     <li><button id="open-sync-btn" class="btn" style="width: 100%; margin-top: 5px;">Run Sync Calibration</button></li>
                                     
                                     <li class="mini-section-header"><span class="toggle-icon">[-]</span>Timing Windows</li>
-                                    <li><label for="timing-window-slider">Overall Timing Window (%)</label><input type="range" id="timing-window-slider" min="50" max="200" value="100" step="5"></li>
+<li><label for="timing-window-slider">Overall Timing Window (%)</label><input type="range" id="timing-window-slider" min="50" max="200" value="100" step="5"></li>
                                     <li><label for="perfect-window-slider">Perfect Window (ms)</label><input type="range" id="perfect-window-slider" data-gametweak="perfect" min="10" max="100" value="50" step="1"></li>
                                     <li><label for="good-window-slider">Good Window (ms)</label><input type="range" id="good-window-slider" data-gametweak="good" min="50" max="200" value="100" step="5"></li>
                                     
@@ -1448,6 +1757,10 @@
                                     <li><label for="hold-score-slider">Hold Score Per Second</label><input type="range" id="hold-score-slider" min="0" max="100" value="20" step="5"></li>
                                     
                                     <li class="mini-section-header"><span class="toggle-icon">[-]</span>Accuracy</li>
+                                    <li>
+                                        <label for="hold-accuracy-toggle">Enable Hold Accuracy</label>
+                                        <input type="checkbox" id="hold-accuracy-toggle" class="toggle" checked>
+                                    </li>
                                     <li><label for="hold-accuracy-slider">Hold Accuracy Intensity</label><input type="range" id="hold-accuracy-slider" data-gametweak="accuracy" min="0.5" max="1.0" value="0.9" step="0.05"></li>
                                     <li><label for="overhold-window-slider">Over-hold Penalty Window (s)</label><input type="range" id="overhold-window-slider" min="0.05" max="0.5" value="0.15" step="0.01"></li>
                                     
@@ -1463,7 +1776,7 @@
 
             <div id="tutorial-container">
                 <div id="watermark" style="text-align: center; color: var(--text-light-color); font-size: 0.8em; user-select: none;">
-                    &copy; NASHqp 2026
+                    &copy; NASHqp 2025
                 </div>
                 <div id="tutorial-icon" title="Show Tutorial">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
@@ -1501,10 +1814,12 @@
     <div id="channel-settings-modal-overlay" class="modal-overlay">
         <div id="channel-settings-modal" class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">Channel Settings</h2>
+    <h2 id="modal-title">Channel Settings</h2>
                 <button id="modal-close-btn" class="modal-close">&times;</button>
             </div>
             <div id="modal-body" class="modal-body">
+                 <!-- Tabs will be dynamically inserted here -->
+                 <!-- Tab content will be dynamically inserted here -->
             </div>
         </div>
     </div>
@@ -1663,9 +1978,11 @@
 
             // --- State Variables ---
             let midiData = null, pianoSampler = null, drumSampler = null, audioParts = {}, popSynth = null, panner = null;
+            let instrumentPlayers = {};
             let playerPianoSampler = null, calMetronome = null;
             // MODIFIED: Added playerGain for separate volume control
             let accompanimentGain = null, playerGain = null;
+
             let allNotes = [], enabledChannels = new Set();
             let channelInstruments = {};
             let channelOrder = [];
@@ -1680,6 +1997,9 @@
             let triggeredPulseNoteIds = new Set();
             let midiPacksData = {};
             let customPackCounter = 1;
+
+            // --- ADDED: Active Voices Tracking ---
+            let activeChannelVoices = {};
             
             // --- Settings Variables ---
             let isPulseEnabled = true;
@@ -1705,12 +2025,18 @@
             // --- Visual Aid Settings ---
             let isGuidanceModeEnabled = false;
             let guidanceModeStyle = 'glow';
+            let guidancePreDuration = 1.5;
+            let isGuidanceSizeDynamic = false;
+            let guidanceMaxSize = 5;
+
             let isNoteLabelModeEnabled = false;
             let noteLabelOrientation = 'horizontal';
             let noteLabelPosition = 'middle';
             let noteLabelShowOctave = true;
             let noteLabelUseAutomaticColor = true;
             let guidedKeys = new Set();
+
+
             // NEW: Note outline settings
             let isNoteOutlineEnabled = false;
             let noteOutlineStyle = 'inward';
@@ -1738,9 +2064,17 @@
 
             // --- NEW: Keyboard Game State ---
             let kbGameNumLanes = 4;
+            let kbGameNoteDensity = 100;
+
+            let kbGameDensityMode = 'beat'; // 'beat' or 'full'
+            let kbGameChordSimplification = 100; // Percentage for beat mode
+
             let kbGameKeybinds = ['d', 'f', 'j', 'k'];
+
             let kbGameLaneNotes = []; // Processed notes for keyboard mode
             let kbGamePlayerHeldKeys = new Map(); // laneIndex -> { gameNote, startTime, ... }
+            let kbGamePhysicalKeysDown = new Set();
+
             let kbGameRenderedNoteIds = new Set();
             let kbGameUseNoteColor = true;
             let kbGameAlgorithm = 'zoned'; // NEW: State for the selected algorithm
@@ -1765,11 +2099,14 @@
             let missWindow = 0.15;
             let baseScore = 1.0;
             let comboBonus = 1.0;
+	
             let holdScorePerSecond = 20;
             let holdAccuracyIntensity = 0.9;
+            let isHoldAccuracyEnabled = true;
             let overholdPenaltyWindow = 0.15;
             let isVelocityScoringEnabled = false;
             let velocitySensitivity = 1.0;
+
             let isCountdownEnabled = true;
             let countdownDefaultTempo = 120;
 
@@ -2067,24 +2404,70 @@
                 return {r, g, b};
             }
 
-            async function initializeInstruments() {
+async function initializeInstruments() {
                 // MODIFIED: Separated gain nodes for accompaniment and live player input
                 accompanimentGain = new Tone.Gain(accompanimentVolumeSlider.value).toDestination();
                 playerGain = new Tone.Gain().toDestination(); // Volume set by slider later
                 
-                const samplerSettings = {
+                const pianoSamplerSettings = {
                     urls: { A1: "A1.mp3", A2: "A2.mp3", A3: "A3.mp3", A4: "A4.mp3", A5: "A5.mp3", A6: "A6.mp3", C2: "C2.mp3", C3: "C3.mp3", C4: "C4.mp3", C5: "C5.mp3", C6: "C6.mp3", C7: "C7.mp3", },
                     release: 1, baseUrl: "https://tonejs.github.io/audio/salamander/"
                 };
                 
-                pianoSampler = new Tone.Sampler(samplerSettings).connect(accompanimentGain);
-                // MODIFIED: Connect player sampler to its dedicated gain node
-                playerPianoSampler = new Tone.Sampler(samplerSettings).connect(playerGain);
+                pianoSampler = new Tone.Sampler(pianoSamplerSettings).connect(accompanimentGain);
+                playerPianoSampler = new Tone.Sampler(pianoSamplerSettings).connect(playerGain);
                 
                 drumSampler = new Tone.Sampler({
                     urls: { "C3": "kick.mp3", "C#3": "snare.mp3", "D3": "hh.mp3", "D#3": "hho.mp3", "E3": "clap.mp3" },
                     release: 1, baseUrl: "https://tonejs.github.io/audio/drum-samples/CR78/"
                 }).connect(accompanimentGain);
+
+                instrumentPlayers = {
+                    piano: pianoSampler,
+                    drums: drumSampler,
+                };
+
+                // --- ADDED: Effect setup ---
+                const createEffectChain = () => {
+                    const reverb = new Tone.Reverb({ decay: 4, wet: 0 }).connect(accompanimentGain);
+                    const delay = new Tone.FeedbackDelay({ delayTime: "8n", feedback: 0.25, wet: 0 }).connect(reverb);
+                    const filter = new Tone.Filter({ frequency: 20000, Q: 1 }).connect(delay);
+                    return { reverb, delay, filter, inputNode: filter };
+                };
+
+                const instrumentConfigs = {
+                    'bass-electric': { 'A#2': 'As2.mp3', 'A#3': 'As3.mp3', 'A#4': 'As4.mp3', 'C#2': 'Cs2.mp3', 'C#3': 'Cs3.mp3', 'C#4': 'Cs4.mp3', E2: 'E2.mp3', E3: 'E3.mp3', E4: 'E4.mp3', G2: 'G2.mp3', G3: 'G3.mp3', G4: 'G4.mp3' },
+                    'bassoon': { A3: 'A3.mp3', C2: 'C2.mp3', C3: 'C3.mp3', C4: 'C4.mp3', E3: 'E3.mp3', G2: 'G2.mp3', G3: 'G3.mp3' },
+                    'cello': { A3: 'A3.mp3', A4: 'A4.mp3', C2: 'C2.mp3', C3: 'C3.mp3', C4: 'C4.mp3', C5: 'C5.mp3', E2: 'E2.mp3', E3: 'E3.mp3', E4: 'E4.mp3', G2: 'G2.mp3', G3: 'G3.mp3', G4: 'G4.mp3' },
+                    'contrabass': { A2: 'A2.mp3', C1: 'C1.mp3', C2: 'C2.mp3', E1: 'E1.mp3', E2: 'E2.mp3', G0: 'G0.mp3', G1: 'G1.mp3' },
+                    'flute': { A5: 'A5.mp3', C3: 'C3.mp3', C4: 'C4.mp3', C5: 'C5.mp3', C6: 'C6.mp3', E4: 'E4.mp3', E5: 'E5.mp3', G3: 'G3.mp3', G4: 'G4.mp3', G5: 'G5.mp3' },
+                    'french-horn': { A2: 'A2.mp3', A4: 'A4.mp3', C2: 'C2.mp3', C3: 'C3.mp3', C4: 'C4.mp3', D3: 'D3.mp3', D4: 'D4.mp3', F2: 'F2.mp3', F3: 'F3.mp3', F4: 'F4.mp3' },
+                    'guitar-acoustic': { 'F#3': 'Fs3.mp3', 'F#4': 'Fs4.mp3', G2: 'G2.mp3', G3: 'G3.mp3', G4: 'G4.mp3', A2: 'A2.mp3', A3: 'A3.mp3', A4: 'A4.mp3', C3: 'C3.mp3', C4: 'C4.mp3', D3: 'D3.mp3', D4: 'D4.mp3' },
+                    'guitar-electric': { 'A#3': 'As3.mp3', 'C#4': 'Cs4.mp3', 'D2': 'D2.mp3', 'F#2': 'Fs2.mp3', 'F#3': 'Fs3.mp3', 'F#4': 'Fs4.mp3', 'A2': 'A2.mp3', 'A3': 'A3.mp3', 'A4': 'A4.mp3', 'C3': 'C3.mp3', 'C4': 'C4.mp3', 'C5': 'C5.mp3' },
+                    'harmonium': { 'A#2': 'As2.mp3', 'A#3': 'As3.mp3', 'C#2': 'Cs2.mp3', 'C#3': 'Cs3.mp3', 'C#4': 'Cs4.mp3', 'F2': 'F2.mp3', 'F3': 'F3.mp3', 'F4': 'F4.mp3' },
+                    'organ': { A2: 'A2.mp3', A3: 'A3.mp3', A4: 'A4.mp3', C2: 'C2.mp3', C3: 'C3.mp3', C4: 'C4.mp3', C5: 'C5.mp3' },
+                    'saxophone': { 'A#3': 'As3.mp3', 'A#4': 'As4.mp3', 'C#3': 'Cs3.mp3', 'C#4': 'Cs4.mp3', 'D3': 'D3.mp3', 'D4': 'D4.mp3', 'D5': 'D5.mp3', 'F3': 'F3.mp3', 'F4': 'F4.mp3' },
+                    'trombone': { 'A#1': 'As1.mp3', 'A#2': 'As2.mp3', 'A#3': 'As3.mp3', 'C2': 'C2.mp3', 'C3': 'C3.mp3', 'C4': 'C4.mp3', 'F2': 'F2.mp3', 'F3': 'F3.mp3' },
+                    'trumpet': { A3: 'A3.mp3', C3: 'C3.mp3', C4: 'C4.mp3', C5: 'C5.mp3', E3: 'E3.mp3', E4: 'E4.mp3', G3: 'G3.mp3' },
+                    'tuba': { 'A#1': 'As1.mp3', 'A#2': 'As2.mp3', 'D2': 'D2.mp3', 'D3': 'D3.mp3', 'F1': 'F1.mp3', 'F2': 'F2.mp3' },
+                    'violin': { A3: 'A3.mp3', A4: 'A4.mp3', A5: 'A5.mp3', C4: 'C4.mp3', C5: 'C5.mp3', C6: 'C6.mp3', E4: 'E4.mp3', E5: 'E5.mp3', G3: 'G3.mp3', G4: 'G4.mp3', G5: 'G5.mp3' },
+                    'xylophone': { C5: 'C5.mp3', C6: 'C6.mp3', C7: 'C7.mp3', C8: 'C8.mp3', G4: 'G4.mp3', G5: 'G5.mp3', G6: 'G6.mp3', G7: 'G7.mp3' }
+                };
+
+                for (const [name, urls] of Object.entries(instrumentConfigs)) {
+                    instrumentPlayers[name] = new Tone.Sampler({ urls, release: 1, baseUrl: `https://nbrosowsky.github.io/tonejs-instruments/samples/${name}/`}).connect(accompanimentGain);
+                }
+
+                await Tone.loaded();
+                
+                // --- REVISED: Rebuild instrumentPlayers with effects ---
+                for(const instName in instrumentPlayers) {
+                    const sampler = instrumentPlayers[instName];
+                    sampler.disconnect(accompanimentGain);
+                    const effects = createEffectChain();
+                    sampler.connect(effects.inputNode);
+                    instrumentPlayers[instName] = { sampler, effects };
+                }
                 
                 calMetronome = new Tone.MembraneSynth({
                     pitchDecay: 0.008,
@@ -2093,14 +2476,17 @@
                 }).toDestination();
                 calMetronome.volume.value = -10;
 
-                pianoSampler.volume.value = 0;
-                drumSampler.volume.value = 0;
+                Object.values(instrumentPlayers).forEach(inst => {
+                    if(inst.volume) inst.volume.value = 0;
+                });
 
                 // REVAMPED: This slider now controls the playerGain with a linear value
                 playerGain.gain.value = parseFloat(volumeSlider.value);
                 
                 await Tone.loaded();
             }
+
+
 
             function initializePopSynth() {
                 panner = new Tone.Panner(0).toDestination();
@@ -2146,13 +2532,29 @@
                 });
 
                 document.getElementById('guidance-mode-toggle').addEventListener('change', e => isGuidanceModeEnabled = e.target.checked);
-                document.getElementById('guidance-style-select').addEventListener('change', e => guidanceModeStyle = e.target.value);
+                document.getElementById('guidance-pre-duration-slider').addEventListener('input', e => guidancePreDuration = parseFloat(e.target.value));
+                document.getElementById('guidance-style-select').addEventListener('change', e => {
+                    guidanceModeStyle = e.target.value;
+                    // Force a visual update by clearing the set, so classes get re-applied next frame
+                    guidedKeys.clear();
+                });
+                document.getElementById('guidance-dynamic-sizing-toggle').addEventListener('change', e => {
+                    isGuidanceSizeDynamic = e.target.checked;
+                    // If we turn it off, reset any existing dynamic styles
+                    if (!isGuidanceSizeDynamic) {
+                        document.querySelectorAll('.piano-key.guided').forEach(keyEl => {
+                            keyEl.style.removeProperty('--guidance-dynamic-size');
+                        });
+                    }
+                });
+                document.getElementById('guidance-max-size-slider').addEventListener('input', e => guidanceMaxSize = parseFloat(e.target.value));
                 document.getElementById('guidance-opacity-slider').addEventListener('input', e => {
                      document.documentElement.style.setProperty('--guidance-opacity', parseFloat(e.target.value) / 100);
                 });
                 document.getElementById('pulse-opacity-slider').addEventListener('input', e => {
                     pulseOpacity = parseFloat(e.target.value) / 100;
                 });
+
 
                 document.getElementById('grid-mode-toggle').addEventListener('change', e => document.body.classList.toggle('grid-mode-active', e.target.checked));
                 document.getElementById('grid-shading-slider').addEventListener('input', e => {
@@ -2407,10 +2809,10 @@
                 standardHeader.innerHTML = '<span class="toggle-icon">[-]</span>Playback';
                 container.appendChild(standardHeader);
 
-                const standardKeybinds = {
+		const standardKeybinds = {
                     togglePlay: 'Play/Pause',
                     resetPlayback: 'Reset Playback',
-                    gameExit: 'Exit Game Mode'
+                    gameExit: 'Return / Close Menu'
                 };
                 for (const [action, label] of Object.entries(standardKeybinds)) {
                     const item = document.createElement('div');
@@ -2486,13 +2888,17 @@
                 const lowerKey = e.key.toLowerCase();
                 
                 // --- NEW: Keyboard Game Input ---
-                if (activeGameMode === 'keyboard' && isPlaying) {
-                    const laneIndex = kbGameKeybinds.findIndex(k => k.toLowerCase() === lowerKey);
-                    if (laneIndex !== -1 && !kbGamePlayerHeldKeys.has(laneIndex)) {
-                        e.preventDefault();
-                        kbGame_handleKeyPress(laneIndex);
-                    }
-                }
+        if (activeGameMode === 'keyboard' && isPlaying) {
+            const laneIndex = kbGameKeybinds.findIndex(k => k.toLowerCase() === lowerKey);
+            
+            // EDITED CODE BLOCK
+            if (laneIndex !== -1 && !kbGamePhysicalKeysDown.has(laneIndex)) {
+                e.preventDefault();
+                kbGamePhysicalKeysDown.add(laneIndex);
+                kbGame_handleKeyPress(laneIndex);
+            }
+            // END OF EDITED CODE BLOCK
+        }
                 
                 if (lowerKey === keybinds.togglePlay.toLowerCase()) {
                     e.preventDefault();
@@ -2504,20 +2910,24 @@
                     } else if (midiData) {
                         seekTo(0);
                     }
-                } else if (activeGameMode !== 'none' && lowerKey === keybinds.gameExit.toLowerCase()) {
+		} else if (activeGameMode !== 'none' && lowerKey === keybinds.gameExit.toLowerCase()) {
                     e.preventDefault();
                     exitActiveGameMode();
+                } else if (modalOverlay.classList.contains('visible') && lowerKey === keybinds.gameExit.toLowerCase()) {
+                    e.preventDefault();
+                    closeChannelSettingsModal();
                 }
             }
             
             function handleGlobalKeyup(e) {
-                 if (isListeningForKey || activeGameMode !== 'keyboard' || !isPlaying) return;
-                 const lowerKey = e.key.toLowerCase();
-                 const laneIndex = kbGameKeybinds.findIndex(k => k.toLowerCase() === lowerKey);
-                 if (laneIndex !== -1) {
-                    kbGame_handleKeyRelease(laneIndex);
-                 }
-            }
+         if (isListeningForKey || activeGameMode !== 'keyboard' || !isPlaying) return;
+         const lowerKey = e.key.toLowerCase();
+         const laneIndex = kbGameKeybinds.findIndex(k => k.toLowerCase() === lowerKey);
+         if (laneIndex !== -1) {
+            kbGamePhysicalKeysDown.delete(laneIndex);
+            kbGame_handleKeyRelease(laneIndex);
+         }
+    }
 
             function handleFile(file) {
                 if (file && (file.name.endsWith('.mid') || file.name.endsWith('.midi'))) {
@@ -2587,7 +2997,24 @@ async function loadMidiFile(file) {
                 const channels = new Set(allNotes.map(n => n.channel));
                 enabledChannels = new Set(channels);
                 channelInstruments = {}; 
+                channels.forEach(ch => {
+                    channelInstruments[ch] = {
+                        instrument: ch === 9 ? 'drums' : 'piano',
+                        volume: 1,
+                        mode: 'poly',
+                        maxPolyphony: 16,
+                        // --- ADDED: Default effect values ---
+                        reverbMix: 0,
+                        delayMix: 0,
+                        delayTime: 0.25,
+                        delayFeedback: 0.25,
+                        filterType: 'lowpass',
+                        filterFreq: 20000,
+                        filterQ: 1
+                    };
+                });
                 channelOrder = [...channels].sort((a, b) => a - b);
+
                 
                 const tempo = midiData.header.tempos[0]?.bpm || countdownDefaultTempo;
                 preRollDuration = (activeGameMode !== 'none' && isCountdownEnabled) || (activeGameMode === 'none' && isPreRollEnabled) ? (60 / tempo) * 4 : 0;
@@ -2857,34 +3284,317 @@ async function loadMidiFile(file) {
                 });
             }
             
-            function openChannelSettingsModal(channel) {
+function openChannelSettingsModal(channel) {
                 modalTitle.textContent = `Settings for Channel ${channel + 1}`;
                 modalBody.innerHTML = ''; 
-                const instrumentSetting = document.createElement('div');
-                instrumentSetting.className = 'setting-item';
-                instrumentSetting.innerHTML = `<label for="instrument-select">Instrument</label><span>Grand Piano</span>`;
-                modalBody.appendChild(instrumentSetting);
-                if (channel === 9) {
-                    instrumentSetting.querySelector('span').textContent = 'Piano / Drums';
-                    const drumModeSetting = document.createElement('div');
-                    drumModeSetting.className = 'setting-item';
-                    const isDrumMode = channelInstruments[9] === 'drums';
-                    drumModeSetting.innerHTML = `<label for="drum-mode-toggle">Use Drum Kit</label><input type="checkbox" id="drum-mode-toggle" class="toggle" ${isDrumMode ? 'checked' : ''}>`;
-                    modalBody.appendChild(drumModeSetting);
-                    drumModeSetting.querySelector('#drum-mode-toggle').addEventListener('change', (e) => {
-                        channelInstruments[9] = e.target.checked ? 'drums' : 'piano';
+
+                const settings = channelInstruments[channel];
+                if (!settings) return;
+
+                // --- ADDED: Tab Navigation ---
+                const tabsContainer = document.createElement('div');
+                tabsContainer.className = 'modal-tabs';
+                
+                const instrumentTabBtn = document.createElement('button');
+                instrumentTabBtn.className = 'modal-tab-btn active';
+                instrumentTabBtn.textContent = 'Instrument';
+                instrumentTabBtn.dataset.tab = 'instrument';
+
+                const effectsTabBtn = document.createElement('button');
+                effectsTabBtn.className = 'modal-tab-btn';
+                effectsTabBtn.textContent = 'Effects';
+                effectsTabBtn.dataset.tab = 'effects';
+
+                tabsContainer.append(instrumentTabBtn, effectsTabBtn);
+                modalBody.appendChild(tabsContainer);
+
+                // --- ADDED: Tab Content Containers ---
+                const instrumentContent = document.createElement('div');
+                instrumentContent.className = 'modal-tab-content active';
+                instrumentContent.id = 'modal-tab-instrument';
+
+                const effectsContent = document.createElement('div');
+                effectsContent.className = 'modal-tab-content';
+                effectsContent.id = 'modal-tab-effects';
+
+
+                // --- Instrument Section (MOVED) ---
+                const instrumentSection = document.createElement('div');
+                instrumentSection.className = 'modal-section';
+                instrumentSection.innerHTML = '<h4>Instrument</h4>';
+                
+                const isDrumChannel = channel === 9;
+                const instruments = [
+                    { value: 'piano', text: 'Piano' }, { value: 'bass-electric', text: 'Bass (Electric)' },
+                    { value: 'bassoon', text: 'Bassoon' }, { value: 'cello', text: 'Cello' },
+		    { value: 'contrabass', text: 'Contrabass' },
+                    { value: 'flute', text: 'Flute' }, { value: 'french-horn', text: 'French Horn' },
+                    { value: 'guitar-acoustic', text: 'Guitar (Acoustic)' }, { value: 'guitar-electric', text: 'Guitar (Electric)' },
+                    { value: 'harmonium', text: 'Harmonium' },
+                    { value: 'organ', text: 'Organ' }, { value: 'saxophone', text: 'Saxophone' },
+                    { value: 'trombone', text: 'Trombone' }, { value: 'trumpet', text: 'Trumpet' },
+                    { value: 'tuba', text: 'Tuba' }, { value: 'violin', text: 'Violin' },
+                    { value: 'xylophone', text: 'Xylophone' },
+                ];
+                if (isDrumChannel) instruments.push({ value: 'drums', text: 'Drum Kit' });
+
+                const optionsHTML = instruments.map(inst => `<option value="${inst.value}">${inst.text}</option>`).join('');
+                const instrumentSelect = document.createElement('select');
+                instrumentSelect.id = 'instrument-select';
+                instrumentSelect.innerHTML = optionsHTML;
+                instrumentSelect.value = settings.instrument;
+                instrumentSection.appendChild(instrumentSelect);
+                instrumentContent.appendChild(instrumentSection);
+
+                
+                instrumentSelect.addEventListener('change', (e) => {
+                    const oldInstrument = settings.instrument;
+                    const newInstrument = e.target.value;
+                    settings.instrument = newInstrument;
+
+                    const oldPlayer = instrumentPlayers[oldInstrument];
+                    if (oldPlayer) oldPlayer.releaseAll();
+
+                    updateFilteredPlayback();
+
+                    const newPlayer = instrumentPlayers[newInstrument];
+                    if (newPlayer) {
+                        if (newInstrument === 'drums') {
+                            newPlayer.triggerAttackRelease('C3', '8n', Tone.now(), 0.8 * settings.volume);
+                        } else {
+                            newPlayer.triggerAttackRelease('C4', '8n', Tone.now(), 0.8 * settings.volume);
+                        }
+                    }
+
+                    const drumMapDisplay = modalBody.querySelector('#drum-map-display');
+                    if (drumMapDisplay) drumMapDisplay.style.display = newInstrument === 'drums' ? 'block' : 'none';
+                });
+                modalBody.appendChild(instrumentSection);
+
+                // --- Audio Controls Section ---
+                const audioSection = document.createElement('div');
+                audioSection.className = 'modal-section';
+                audioSection.innerHTML = '<h4>Audio Controls</h4>';
+                
+                // Volume
+                const volumeItem = document.createElement('div');
+                volumeItem.className = 'setting-item';
+                const volumeLabel = document.createElement('label');
+                volumeLabel.textContent = 'Volume';
+                const volumeControl = document.createElement('div');
+                volumeControl.className = 'control-with-value';
+                const volumeValue = document.createElement('span');
+                volumeValue.textContent = `${Math.round(settings.volume * 100)}%`;
+                const volumeSlider = document.createElement('input');
+                volumeSlider.type = 'range';
+                volumeSlider.min = 0; volumeSlider.max = 1.5; volumeSlider.step = 0.05; volumeSlider.value = settings.volume;
+                volumeSlider.addEventListener('input', e => {
+                    const newVol = parseFloat(e.target.value);
+                    settings.volume = newVol;
+                    volumeValue.textContent = `${Math.round(newVol * 100)}%`;
+                });
+                volumeControl.append(volumeSlider, volumeValue);
+                volumeItem.append(volumeLabel, volumeControl);
+                audioSection.appendChild(volumeItem);
+                
+                // Playback Mode
+                const modeItem = document.createElement('div');
+                modeItem.className = 'setting-item';
+                const modeLabel = document.createElement('label');
+                modeLabel.textContent = 'Mode';
+                const segmentedControl = document.createElement('div');
+                segmentedControl.className = 'segmented-control';
+                const polyBtn = document.createElement('button');
+                polyBtn.textContent = 'Polyphonic';
+                polyBtn.dataset.mode = 'poly';
+                const monoBtn = document.createElement('button');
+                monoBtn.textContent = 'Monophonic';
+                monoBtn.dataset.mode = 'mono';
+                segmentedControl.append(polyBtn, monoBtn);
+                modeItem.append(modeLabel, segmentedControl);
+                audioSection.appendChild(modeItem);
+                
+                // Max Voices
+                const polyphonyItem = document.createElement('div');
+                polyphonyItem.className = 'setting-item';
+                const polyphonyLabel = document.createElement('label');
+                polyphonyLabel.textContent = 'Max Voices';
+                const polyphonyControl = document.createElement('div');
+                polyphonyControl.className = 'control-with-value';
+                const polyphonyValue = document.createElement('span');
+                polyphonyValue.textContent = settings.maxPolyphony;
+                const polyphonySlider = document.createElement('input');
+                polyphonySlider.type = 'range';
+                polyphonySlider.min = 1; polyphonySlider.max = 32; polyphonySlider.step = 1; polyphonySlider.value = settings.maxPolyphony;
+                polyphonySlider.addEventListener('input', e => {
+                    const newMax = parseInt(e.target.value);
+                    settings.maxPolyphony = newMax;
+                    polyphonyValue.textContent = newMax;
+                });
+                polyphonyControl.append(polyphonySlider, polyphonyValue);
+                polyphonyItem.append(polyphonyLabel, polyphonyControl);
+                audioSection.appendChild(polyphonyItem);
+
+                function updateModeButtons() {
+                    if (settings.mode === 'poly') {
+                        polyBtn.classList.add('active');
+                        monoBtn.classList.remove('active');
+                        polyphonyItem.style.display = 'grid';
+                    } else {
+                        monoBtn.classList.add('active');
+                        polyBtn.classList.remove('active');
+                        polyphonyItem.style.display = 'none';
+                    }
+                }
+                updateModeButtons();
+
+                polyBtn.addEventListener('click', () => {
+                    if(settings.mode !== 'poly') {
+                        settings.mode = 'poly';
+                        updateModeButtons();
                         updateFilteredPlayback();
-                        const drumMapDisplay = modalBody.querySelector('#drum-map-display');
-                        if (drumMapDisplay) drumMapDisplay.style.display = e.target.checked ? 'block' : 'none';
-                    });
+                    }
+                });
+                monoBtn.addEventListener('click', () => {
+                     if(settings.mode !== 'mono') {
+                        settings.mode = 'mono';
+                        updateModeButtons();
+                        updateFilteredPlayback();
+                    }
+                });
+
+                instrumentContent.appendChild(instrumentSection);
+                instrumentContent.appendChild(audioSection);
+                
+                if (isDrumChannel) {
                     const drumMapDisplay = document.createElement('div');
                     drumMapDisplay.id = 'drum-map-display';
-                    drumMapDisplay.style.display = isDrumMode ? 'block' : 'none';
+                    drumMapDisplay.className = 'modal-section';
+                    drumMapDisplay.style.display = settings.instrument === 'drums' ? 'block' : 'none';
                     const listItems = Object.entries(GM_DRUM_MAP).map(([midi, name]) => `<li><strong>${new Tone.Frequency(parseInt(midi), "midi").toNote()}</strong> <span>${name}</span></li>`).join('');
-                    drumMapDisplay.innerHTML = `<h3>General MIDI Drum Map</h3><ul>${listItems}</ul>`;
-                    modalBody.appendChild(drumMapDisplay);
+                    drumMapDisplay.innerHTML = `<h4>General MIDI Drum Map</h4><ul>${listItems}</ul>`;
+                    instrumentContent.appendChild(drumMapDisplay);
                 }
+
+                // --- ADDED: Create and Append Effects Tab Content ---
+                createEffectsTabContent(channel, effectsContent);
+                
+                modalBody.append(instrumentContent, effectsContent);
+                
+                // --- ADDED: Tab switching logic ---
+                const tabBtns = modalBody.querySelectorAll('.modal-tab-btn');
+                const tabContents = modalBody.querySelectorAll('.modal-tab-content');
+                tabBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        tabBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        tabContents.forEach(c => c.classList.remove('active'));
+                        modalBody.querySelector(`#modal-tab-${btn.dataset.tab}`).classList.add('active');
+                    });
+                });
+
                 modalOverlay.classList.add('visible');
+            }
+
+            // --- ADDED: Function to build the Effects tab UI ---
+            function createEffectsTabContent(channel, container) {
+                const settings = channelInstruments[channel];
+                const instrumentName = settings.instrument;
+                const instrument = instrumentPlayers[instrumentName];
+
+                if (!instrument || !instrument.effects) return;
+
+                const createSlider = (label, id, min, max, step, value, unit, callback) => {
+                    const item = document.createElement('div');
+                    item.className = 'setting-item';
+                    const labelEl = document.createElement('label');
+                    labelEl.textContent = label;
+                    const control = document.createElement('div');
+                    control.className = 'control-with-value';
+                    const valueEl = document.createElement('span');
+                    valueEl.textContent = `${Math.round(value * 100)}${unit}`;
+                    const slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.id = id; slider.min = min; slider.max = max; slider.step = step; slider.value = value;
+                    slider.addEventListener('input', e => {
+                        const val = parseFloat(e.target.value);
+                        valueEl.textContent = `${Math.round(val * 100)}${unit}`;
+                        callback(val);
+                    });
+                    control.append(slider, valueEl);
+                    item.append(labelEl, control);
+                    return item;
+                };
+
+                // Reverb
+                const reverbSection = document.createElement('div');
+                reverbSection.className = 'modal-section';
+                reverbSection.innerHTML = '<h4>Reverb</h4>';
+                reverbSection.appendChild(createSlider('Mix', 'reverb-mix', 0, 1, 0.01, settings.reverbMix, '%', (val) => {
+                    settings.reverbMix = val;
+                    instrument.effects.reverb.wet.value = val;
+                }));
+                container.appendChild(reverbSection);
+
+                // Delay
+                const delaySection = document.createElement('div');
+                delaySection.className = 'modal-section';
+                delaySection.innerHTML = '<h4>Delay</h4>';
+                delaySection.appendChild(createSlider('Mix', 'delay-mix', 0, 1, 0.01, settings.delayMix, '%', (val) => {
+                    settings.delayMix = val;
+                    instrument.effects.delay.wet.value = val;
+                }));
+                 delaySection.appendChild(createSlider('Feedback', 'delay-feedback', 0, 0.9, 0.01, settings.delayFeedback, '%', (val) => {
+                    settings.delayFeedback = val;
+                    instrument.effects.delay.feedback.value = val;
+                }));
+                container.appendChild(delaySection);
+
+                // Filter
+                const filterSection = document.createElement('div');
+                filterSection.className = 'modal-section';
+                filterSection.innerHTML = '<h4>Filter</h4>';
+                const filterTypeItem = document.createElement('div');
+                filterTypeItem.className = 'setting-item';
+                filterTypeItem.innerHTML = `<label>Type</label>`;
+                const filterSelect = document.createElement('select');
+                ['lowpass', 'highpass', 'bandpass', 'notch'].forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                    if(type === settings.filterType) option.selected = true;
+                    filterSelect.appendChild(option);
+                });
+                filterSelect.addEventListener('change', e => {
+                    settings.filterType = e.target.value;
+                    instrument.effects.filter.type = e.target.value;
+                });
+                filterTypeItem.appendChild(filterSelect);
+                filterSection.appendChild(filterTypeItem);
+                
+                const freqItem = createSlider('Frequency', 'filter-freq', 20, 20000, 10, settings.filterFreq, ' Hz', (val) => {
+                    settings.filterFreq = val;
+                    instrument.effects.filter.frequency.value = val;
+                });
+                // Custom value display for frequency
+                freqItem.querySelector('span').textContent = `${Math.round(settings.filterFreq)} Hz`;
+                freqItem.querySelector('input').addEventListener('input', e => {
+                    freqItem.querySelector('span').textContent = `${Math.round(e.target.value)} Hz`;
+                });
+                filterSection.appendChild(freqItem);
+                
+                const qItem = createSlider('Resonance (Q)', 'filter-q', 0.1, 10, 0.1, settings.filterQ, '', (val) => {
+                    settings.filterQ = val;
+                    instrument.effects.filter.Q.value = val;
+                });
+                // Custom value display for Q
+                 qItem.querySelector('span').textContent = settings.filterQ.toFixed(1);
+                 qItem.querySelector('input').addEventListener('input', e => {
+                     qItem.querySelector('span').textContent = parseFloat(e.target.value).toFixed(1);
+                 });
+                filterSection.appendChild(qItem);
+
+                container.appendChild(filterSection);
             }
 
             function closeChannelSettingsModal() {
@@ -3040,40 +3750,81 @@ async function loadMidiFile(file) {
                 setTimeout(() => pulseEl.remove(), pulseDuration * 1000);
             }
 
-            function updateFilteredPlayback() {
+function updateFilteredPlayback() {
                 const wasPlaying = isPlaying;
                 if (wasPlaying) Tone.Transport.pause();
+                
                 Object.values(audioParts).forEach(part => part?.dispose());
                 audioParts = {};
-                if (pianoSampler) pianoSampler.releaseAll();
-                if (drumSampler) drumSampler.releaseAll();
+                Object.values(instrumentPlayers).forEach(player => {
+                    if (player.sampler) player.sampler.releaseAll();
+                    else player.releaseAll(); // Backwards compatibility for old structure
+                });
+                activeChannelVoices = {}; // Reset active voices
 
                 const filteredNotes = allNotes.filter(note => enabledChannels.has(note.channel));
-                const pianoNotes = filteredNotes.filter(note => channelInstruments[note.channel] !== 'drums');
-                const drumNotes = filteredNotes.filter(note => channelInstruments[note.channel] === 'drums');
                 
-            // MODIFIED
-            const partCallback = (time, note) => {
-                 Tone.Draw.schedule(() => {
-                    triggerColumnPulse(note);
-                    // Highlight keys in normal mode OR in auto-play game mode
-                    if (activeGameMode === 'none' || (activeGameMode === 'midi' && isAutoPlay)) {
-                        triggerKeyPulse(note);
-                    }
-                }, time);
-            };
+                const notesByInstrument = {};
 
-                if (pianoNotes.length > 0) {
-                    audioParts.piano = new Tone.Part((time, note) => {
-                        pianoSampler.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-                        partCallback(time, note);
-                    }, pianoNotes).start(preRollDuration);
-                }
-                if (drumNotes.length > 0) {
-                     audioParts.drums = new Tone.Part((time, note) => {
-                        drumSampler.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-                        partCallback(time, note);
-                    }, drumNotes).start(preRollDuration);
+                filteredNotes.forEach(note => {
+                    const instrument = channelInstruments[note.channel]?.instrument || 'piano';
+                    if (!notesByInstrument[instrument]) {
+                        notesByInstrument[instrument] = [];
+                    }
+                    notesByInstrument[instrument].push(note);
+                });
+                
+                const partCallback = (time, note) => {
+                    const settings = channelInstruments[note.channel];
+                    if (!settings) return;
+                    
+                    const player = instrumentPlayers[settings.instrument];
+                    if (!player || !player.sampler) return;
+
+                    if (!activeChannelVoices[note.channel]) {
+                        activeChannelVoices[note.channel] = [];
+                    }
+
+                    const voices = activeChannelVoices[note.channel];
+
+                    if (settings.mode === 'mono' && voices.length > 0) {
+                        voices.forEach(voice => player.sampler.triggerRelease(voice.name, time));
+                        activeChannelVoices[note.channel] = [];
+                    } else if (settings.mode === 'poly' && voices.length >= settings.maxPolyphony) {
+                        const oldestVoice = voices.shift();
+                        player.sampler.triggerRelease(oldestVoice.name, time);
+                    }
+
+const effectiveVelocity = note.velocity * settings.volume;
+                    // This one call handles both attack and scheduling the release.
+                    player.sampler.triggerAttackRelease(note.name, note.duration, time, effectiveVelocity);
+
+                    // We still need to manage our custom polyphony tracking array.
+                    const voiceInfo = { name: note.name, releaseTime: time + note.duration };
+                    voices.push(voiceInfo);
+
+                    // Schedule a cleanup of the tracking array. This does not affect audio.
+                    Tone.Transport.scheduleOnce(() => {
+                        // Find and remove this note from the active voices list when it's done.
+                        const index = activeChannelVoices[note.channel]?.findIndex(v => v.releaseTime === voiceInfo.releaseTime && v.name === voiceInfo.name);
+                        if (index > -1) {
+                            activeChannelVoices[note.channel].splice(index, 1);
+                        }
+                    }, time + note.duration);
+
+                     Tone.Draw.schedule(() => {
+                        triggerColumnPulse(note);
+                        if (activeGameMode === 'none' || (activeGameMode === 'midi' && isAutoPlay)) {
+                            triggerKeyPulse(note);
+                        }
+                    }, time);
+                };
+
+                for (const instrumentName in notesByInstrument) {
+                    const notes = notesByInstrument[instrumentName];
+                    if (notes.length > 0) {
+                        audioParts[instrumentName] = new Tone.Part(partCallback, notes).start(preRollDuration);
+                    }
                 }
 
                 document.querySelectorAll('.note-visual').forEach(el => {
@@ -3144,8 +3895,10 @@ async function loadMidiFile(file) {
                     Tone.Transport.pause();
                     cancelAnimationFrame(animationFrameId);
                     document.querySelectorAll('.key-pulse-visual').forEach(el => el.remove());
-                    if (pianoSampler) pianoSampler.releaseAll();
-                    if (drumSampler) drumSampler.releaseAll();
+                    Object.values(instrumentPlayers).forEach(player => {
+                        if (player.sampler) player.sampler.releaseAll();
+                        else player.releaseAll();
+                    });
                     if (playerPianoSampler) playerPianoSampler.releaseAll();
                     
                     // --- FIX START ---
@@ -3354,11 +4107,67 @@ function animationLoop() {
                 if (delta > 0) fps = 1000 / delta; 
                 lastFrameTime = now;
                 
+                const newGuidedKeys = new Map(); // Using a Map to store { midi: timeToHit }
+
                 if (isGuidanceModeEnabled && isPlaying && midiData && activeGameMode !== 'keyboard') {
-                    // ... (guidance logic is unchanged)
-                } else if (guidedKeys.size > 0) {
-                    // ... (guidance logic is unchanged)
+                    const songTime = currentTime - preRollDuration;
+                    
+                    allNotes.forEach(note => {
+                        if (enabledChannels.has(note.channel)) {
+                            const timeToHit = note.time - songTime;
+                            // Check if note is approaching within the pre-duration window
+                            if (timeToHit > 0 && timeToHit <= guidancePreDuration) {
+                                // If this key is already in the map, keep the note that's closer to the hit line
+                                if (!newGuidedKeys.has(note.midi) || timeToHit < newGuidedKeys.get(note.midi)) {
+                                    newGuidedKeys.set(note.midi, timeToHit);
+                                }
+                            }
+                        }
+                    });
                 }
+
+                // Update visuals based on the difference between the old set (guidedKeys) and the new map (newGuidedKeys)
+                if (isPlaying || guidedKeys.size > 0 || newGuidedKeys.size > 0) { // Only run this if needed
+                    // 1. Remove guidance from keys that are no longer guided
+                    guidedKeys.forEach(midi => {
+                        if (!newGuidedKeys.has(midi)) {
+                            const keyEl = document.getElementById(`key-${midi}`);
+                            if (keyEl) {
+                                keyEl.classList.remove('guided', 'guidance-style-glow', 'guidance-style-outline');
+                                if (isGuidanceSizeDynamic) {
+                                    keyEl.style.removeProperty('--guidance-dynamic-size');
+                                }
+                            }
+                        }
+                    });
+
+                    // 2. Add or update guidance on keys that should be guided
+                    newGuidedKeys.forEach((timeToHit, midi) => {
+                        const keyEl = document.getElementById(`key-${midi}`);
+                        if (keyEl) {
+                            // Add the classes if they aren't already there
+                            if (!keyEl.classList.contains('guided')) {
+                                keyEl.classList.add('guided', `guidance-style-${guidanceModeStyle}`);
+                            }
+                            
+                            // Update dynamic size on every frame for a smooth animation
+                            if (isGuidanceSizeDynamic) {
+                                // Intensity is a value from 0 to 1, where 1 is at the hit line
+                                const intensity = 1.0 - (timeToHit / guidancePreDuration);
+                                const size = guidanceMaxSize * Math.pow(intensity, 2); // Use pow for a nice ease-in effect
+                                keyEl.style.setProperty('--guidance-dynamic-size', `${size.toFixed(2)}px`);
+                            } else {
+                                // Ensure dynamic size is removed if the feature was turned off while a key was guided
+                                keyEl.style.removeProperty('--guidance-dynamic-size');
+                            }
+                        }
+                    });
+                    
+                    // 3. Finally, update the master set of guided keys for the next frame
+                    guidedKeys = new Set(newGuidedKeys.keys());
+                }
+
+
 
                 if (gameSessionActive && isPlaying && !isAutoPlay) {
                     if (activeGameMode === 'midi') {
@@ -3468,6 +4277,8 @@ function animationLoop() {
                 }
                 if(isPlaying || countdownOverlay.style.display === 'flex') animationFrameId = requestAnimationFrame(animationLoop);
             }
+
+
 
             function formatTime(seconds) {
                 const mins = Math.floor(seconds / 60); const secs = Math.floor(seconds % 60);
@@ -3875,9 +4686,20 @@ async function onMIDIMessage(message) {
                     baseGoodWindow = parseInt(e.target.value) / 1000;
                     updateTimingWindows();
                 });
-                document.getElementById('base-score-slider').addEventListener('input', e => { baseScore = parseFloat(e.target.value); });
+document.getElementById('base-score-slider').addEventListener('input', e => { baseScore = parseFloat(e.target.value); });
                 document.getElementById('combo-bonus-slider').addEventListener('input', e => { comboBonus = parseFloat(e.target.value); });
                 document.getElementById('hold-score-slider').addEventListener('input', e => { holdScorePerSecond = parseInt(e.target.value); });
+
+                const holdAccuracyToggle = document.getElementById('hold-accuracy-toggle');
+                const holdAccuracySliderLi = document.getElementById('hold-accuracy-slider').parentElement;
+
+                holdAccuracyToggle.addEventListener('change', e => {
+                    isHoldAccuracyEnabled = e.target.checked;
+                    holdAccuracySliderLi.style.display = isHoldAccuracyEnabled ? 'flex' : 'none';
+                });
+                isHoldAccuracyEnabled = holdAccuracyToggle.checked;
+                holdAccuracySliderLi.style.display = isHoldAccuracyEnabled ? 'flex' : 'none';
+                
                 document.getElementById('hold-accuracy-slider').addEventListener('input', e => { holdAccuracyIntensity = parseFloat(e.target.value); });
                 document.getElementById('overhold-window-slider').addEventListener('input', e => { overholdPenaltyWindow = parseFloat(e.target.value); });
                 document.getElementById('velocity-scoring-toggle').addEventListener('change', e => { isVelocityScoringEnabled = e.target.checked; });
@@ -3908,6 +4730,36 @@ async function onMIDIMessage(message) {
                     }
                 });
                 
+                const kbDensityModeSelect = document.getElementById('kb-game-density-mode-select');
+                const kbChordSimpLi = document.getElementById('kb-chord-simplification-li');
+                const kbChordSimpSlider = document.getElementById('kb-chord-simplification-slider');
+                const kbChordSimpDisplay = document.getElementById('kb-chord-simplification-display');
+
+                function updateDensityControls() {
+                    const isBeatMode = kbDensityModeSelect.value === 'beat';
+                    kbChordSimpLi.style.display = isBeatMode ? 'block' : 'none';
+                    kbGameDensityMode = kbDensityModeSelect.value;
+                    kbGame_mapMidiToLanes();
+                }
+
+                kbDensityModeSelect.addEventListener('change', updateDensityControls);
+
+                kbChordSimpDisplay.textContent = `${kbChordSimpSlider.value}%`;
+                kbChordSimpSlider.addEventListener('input', e => {
+                    const newSimpLevel = parseInt(e.target.value);
+                    kbChordSimpDisplay.textContent = `${newSimpLevel}%`;
+                    if (newSimpLevel !== kbGameChordSimplification) {
+                        kbGameChordSimplification = newSimpLevel;
+                        kbGame_mapMidiToLanes();
+                    }
+                });
+                // Set initial state
+                kbGameDensityMode = kbDensityModeSelect.value;
+                kbGameChordSimplification = parseInt(kbChordSimpSlider.value);
+                updateDensityControls(); // Call once to set initial visibility
+
+
+
                 const kbAlgorithmSelect = document.getElementById('kb-game-algorithm-select');
                 kbAlgorithmSelect.addEventListener('change', e => {
                     kbGameAlgorithm = e.target.value;
@@ -4210,13 +5062,45 @@ async function onMIDIMessage(message) {
             function kbGame_mapMidiToLanes() {
                 if (!midiData) return;
 
-                const notesToMap = allNotes.filter(note => enabledChannels.has(note.channel))
-                                            .sort((a, b) => a.time - b.time || a.midi - b.midi);
+                let baseNotes = allNotes.filter(note => enabledChannels.has(note.channel))
+                                        .sort((a, b) => a.time - b.time);
+                let notesToMap = [];
+
+                if (kbGameDensityMode === 'beat') {
+                    const CHORD_THRESHOLD = 0.03; // 30ms to be considered part of the same chord/beat
+                    if (baseNotes.length > 0) {
+                        let currentGroup = [baseNotes[0]];
+
+                        for (let i = 1; i < baseNotes.length; i++) {
+                            if (baseNotes[i].time - currentGroup[0].time <= CHORD_THRESHOLD) {
+                                currentGroup.push(baseNotes[i]);
+                            } else {
+                                // Process the completed group
+                                currentGroup.sort((a, b) => b.velocity - a.velocity); // Prioritize high velocity notes
+                                const numToKeep = Math.ceil(currentGroup.length * (kbGameChordSimplification / 100));
+                                notesToMap.push(...currentGroup.slice(0, numToKeep));
+                                
+                                // Start a new group
+                                currentGroup = [baseNotes[i]];
+                            }
+                        }
+                        // Process the very last group
+                        currentGroup.sort((a, b) => b.velocity - a.velocity);
+                        const numToKeep = Math.ceil(currentGroup.length * (kbGameChordSimplification / 100));
+                        notesToMap.push(...currentGroup.slice(0, numToKeep));
+                    }
+                } else { // 'full' mode
+                    notesToMap = baseNotes;
+                }
+                
+                notesToMap.sort((a, b) => a.time - b.time || a.midi - b.midi); // Final sort before mapping
 
                 if (notesToMap.length === 0) {
                     kbGameLaneNotes = Array.from({ length: kbGameNumLanes }, () => []);
                     return;
                 }
+
+
                 
                 // Pre-calculate stats needed by various algorithms
                 const midiNumbers = notesToMap.map(n => n.midi).filter(n => n !== undefined);
@@ -4417,6 +5301,8 @@ async function onMIDIMessage(message) {
                 gameEndingState = 0;
                 playerHeldNotes.clear();
                 kbGamePlayerHeldKeys.clear();
+                kbGamePhysicalKeysDown.clear();
+
                 midiToLaneMap.clear(); // <-- ADD THIS LINE
                 updateHUD();
                 if (allNotes) {
@@ -4683,7 +5569,7 @@ async function onMIDIMessage(message) {
                 }
 
                 // This logic now only applies to notes released *before* the over-hold penalty window.
-                const releaseTime = Tone.Transport.seconds;
+const releaseTime = Tone.Transport.seconds;
                 const playerHoldDuration = releaseTime - gameNote.hitTime;
                 const requiredHoldDuration = gameNote.duration * holdAccuracyIntensity;
                 
@@ -4691,7 +5577,7 @@ async function onMIDIMessage(message) {
                     markNoteAsMiss(gameNote);
                     showJudgement('Miss', '#f44336');
                     lastHeldNoteStatus = `Over-held (Note ${gameNote.midi})`;
-                } else if (playerHoldDuration < requiredHoldDuration) {
+                } else if (isHoldAccuracyEnabled && playerHoldDuration < requiredHoldDuration) {
                     markNoteAsMiss(gameNote);
                     showJudgement('Miss', '#f44336');
                     lastHeldNoteStatus = `Held too short (Note ${gameNote.midi})`;
@@ -4881,6 +5767,86 @@ async function onMIDIMessage(message) {
                 }
             }
             
+            // --- START OF ADDED CODE ---
+            function initializeSettingsSearch() {
+                const searchInput = document.getElementById('settings-search-input');
+                const clearButton = document.getElementById('settings-search-clear');
+                const aside = document.querySelector('aside');
+                const scrollWrapper = document.getElementById('aside-scroll-wrapper');
+
+                let noResultsMessage = null;
+
+                const performSearch = () => {
+                    const query = searchInput.value.toLowerCase().trim();
+                    const allPanels = Array.from(aside.querySelectorAll('.panel'));
+                    const allFilterableItems = Array.from(aside.querySelectorAll('.settings-list > li, .keybind-item'));
+
+                    clearButton.style.display = query.length > 0 ? 'block' : 'none';
+                    aside.classList.toggle('is-searching', query.length > 0);
+                    
+                    if (noResultsMessage) {
+                        noResultsMessage.remove();
+                        noResultsMessage = null;
+                    }
+
+                    if (!query) {
+                        // Reset all items to visible
+                        allPanels.forEach(p => p.classList.remove('is-hidden'));
+                        allFilterableItems.forEach(item => item.classList.remove('is-hidden'));
+                        return;
+                    }
+
+                    let visibleItemsCount = 0;
+
+                    // 1. Filter individual settings items first
+                    allFilterableItems.forEach(item => {
+                        const label = item.querySelector('label');
+                        const text = (label ? label.textContent : item.textContent).toLowerCase();
+                        const isMatch = text.includes(query);
+                        item.classList.toggle('is-hidden', !isMatch);
+                    });
+
+                    // 2. Check container visibility (panels and mini-sections)
+                    allPanels.forEach(panel => {
+                        const panelHeader = panel.querySelector('.panel-header');
+                        // Also check the panel's own title for a match
+                        const panelTitleMatch = panelHeader ? panelHeader.textContent.toLowerCase().includes(query) : false;
+                        
+                        // Find all items within this panel
+                        const itemsInPanel = Array.from(panel.querySelectorAll('.settings-list > li, .keybind-item'));
+                        const visibleChildrenInPanel = itemsInPanel.some(item => !item.classList.contains('is-hidden'));
+                        
+                        if (panelTitleMatch) {
+                            // If title matches, show panel and all its direct children
+                            panel.classList.remove('is-hidden');
+                            itemsInPanel.forEach(item => item.classList.remove('is-hidden'));
+                            visibleItemsCount++;
+                        } else {
+                            // Otherwise, show panel only if it has visible children
+                            panel.classList.toggle('is-hidden', !visibleChildrenInPanel);
+                            if(visibleChildrenInPanel) visibleItemsCount++;
+                        }
+                    });
+
+                    // Check if any visible items were found
+                    if (document.querySelectorAll('.panel:not(.is-hidden)').length === 0) {
+                        noResultsMessage = document.createElement('div');
+                        noResultsMessage.id = 'search-no-results';
+                        noResultsMessage.innerHTML = `<p>No settings found for "<strong>${searchInput.value}</strong>"</p>`;
+                        scrollWrapper.prepend(noResultsMessage);
+                    }
+                };
+                
+                searchInput.addEventListener('input', performSearch);
+                clearButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    performSearch();
+                    searchInput.focus();
+                });
+            }
+            // --- END OF ADDED CODE ---
+
+
             // --- MIDI Packs Functions ---
             function parsePackInfo(text) {
                 const info = { midiTitles: {} };
@@ -4913,6 +5879,24 @@ async function onMIDIMessage(message) {
                 if (num >= 2.5) return '#f39c12'; // Orange
                 return '#2ecc71'; // Green
             }
+
+            // --- START OF ADDED CODE ---
+            /**
+             * Determines if a hex color is light or dark.
+             * @param {string} color - The hex color string (e.g., '#RRGGBB').
+             * @returns {boolean} - True if the color is light, false if dark.
+             */
+            function isColorLight(color) {
+                const hex = color.replace('#', '');
+                const r = parseInt(hex.substring(0, 2), 16);
+                const g = parseInt(hex.substring(2, 4), 16);
+                const b = parseInt(hex.substring(4, 6), 16);
+                // Using the YIQ formula to determine brightness
+                const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return yiq >= 128;
+            }
+            // --- END OF ADDED CODE ---
+
 
             function renderDifficultyStars(rating) {
                 const num = parseFloat(rating) || 0;
@@ -5007,10 +5991,19 @@ async function onMIDIMessage(message) {
                     const difficultyColor = getDifficultyColor(pack.info?.difficulty);
                     li.style.borderLeft = `4px solid ${difficultyColor}`;
 
+                    // --- START OF EDIT ---
+                    const authors = (pack.info['author(s)'] || '').split(',').map(a => a.trim()).filter(Boolean);
+                    const genre = pack.info.genre || '';
+
                     li.innerHTML = `
                         <div class="midipack-header">
                             <p class="midipack-title">${pack.info?.title || packName}</p>
+                            
+                            <!-- MOVED: Author, then Genre, then Description -->
+                            ${authors.length > 0 ? `<div class="midipack-author"><span class="midipack-author-list" title="${authors.join(', ')}">${authors.join(', ')}</span></div>` : ''}
+                            ${genre ? `<div class="midipack-genre"><strong>${genre}</strong></div>` : ''}
                             ${pack.info?.description ? `<p class="midipack-description">${pack.info.description}</p>` : ''}
+
                             <div class="midipack-meta">
                                 <span class="difficulty-stars">${renderDifficultyStars(pack.info?.difficulty)}</span>
                                 <span>${pack.midiData.length} songs</span>
@@ -5022,9 +6015,19 @@ async function onMIDIMessage(message) {
                            </div>
                         </div>
                     `;
+                    // --- END OF EDIT ---
+                    
                     
                     const header = li.querySelector('.midipack-header');
-                    header.style.backgroundImage = `linear-gradient(90deg, ${hexToRgba(difficultyColor, 0.15)} 0%, transparent 70%)`;
+                    // REMOVED: header.style.backgroundImage = `linear-gradient(90deg, ${hexToRgba(difficultyColor, 0.15)} 0%, transparent 70%)`;
+                    
+                    // --- START OF ADDED CODE ---
+                    // Apply solid background color, gradient overlay, and dynamic text color
+                    const textColorClass = isColorLight(difficultyColor) ? 'dark-text' : 'light-text';
+                    header.classList.add(textColorClass);
+                    header.style.backgroundColor = difficultyColor;
+                    header.style.backgroundImage = 'linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)';
+                    // --- END OF ADDED CODE ---
 
 
                     const songListEl = li.querySelector('.midipack-songlist');
@@ -5047,6 +6050,22 @@ async function onMIDIMessage(message) {
                     fragment.appendChild(li);
                 }
                 midiPacksList.appendChild(fragment);
+
+                // --- START OF EDIT ---
+                // MODIFIED: Post-render logic now targets the new class '.midipack-author-list'
+                midiPacksList.querySelectorAll('.midipack-author-list').forEach(authorsEl => {
+                    setTimeout(() => {
+                        // The core logic remains the same, just the selector has changed.
+                        if (authorsEl.scrollWidth > authorsEl.offsetWidth) {
+                            const fullAuthorList = authorsEl.getAttribute('title');
+                            if (fullAuthorList) {
+                                const firstAuthor = fullAuthorList.split(',')[0];
+                                authorsEl.innerHTML = `${firstAuthor}, <span style="cursor: help; text-decoration: underline dotted;">etc.</span>`;
+                            }
+                        }
+                    }, 0);
+                });
+                // --- END OF EDIT ---
             }
             
             // --- MODIFIED/IMPLEMENTED: Keyboard Rhythm Game Functions ---
@@ -5185,7 +6204,14 @@ async function onMIDIMessage(message) {
                  const gameNote = kbGame_checkPlayerHit(laneIndex);
                  if (gameNote) {
                     const originalNote = allNotes[gameNote.originalId];
-                    playerPianoSampler.triggerAttack(originalNote.name, Tone.now(), originalNote.velocity);
+                    
+                    // ADDED CODE BLOCK
+                    if (gameNote.duration > 0.15) { // It's a hold note
+                        playerPianoSampler.triggerAttack(originalNote.name, Tone.now(), originalNote.velocity);
+                    } else { // It's a tap note
+                        playerPianoSampler.triggerAttackRelease(originalNote.name, originalNote.duration, Tone.now(), originalNote.velocity);
+                    }
+                    // END OF ADDED CODE BLOCK
                     
                     if (kbGameUseNoteColor && indicator) {
                         indicator.style.backgroundColor = gameNote.color;
@@ -5230,12 +6256,15 @@ async function onMIDIMessage(message) {
                         return;
                     }
 
-                     const releaseTime = Tone.Transport.seconds;
+const releaseTime = Tone.Transport.seconds;
                      const playerHoldDuration = releaseTime - gameNote.hitTime;
                      const requiredHoldDuration = gameNote.duration * holdAccuracyIntensity;
                      const noteEl = document.getElementById(`kb-note-${gameNote.id}`);
 
-                     if (force || playerHoldDuration < requiredHoldDuration) {
+                     if (force) {
+                         gameNote.holdState = 'released_ok';
+                         if (noteEl) noteEl.classList.add('hit');
+                     } else if (isHoldAccuracyEnabled && playerHoldDuration < requiredHoldDuration) {
                          kbGame_markNoteAsMiss(gameNote);
                          showJudgement('Miss', '#f44336');
                          lastHeldNoteStatus = `Held too short (Lane ${laneIndex+1})`;
@@ -5418,6 +6447,8 @@ async function onMIDIMessage(message) {
             document.getElementById('start-midi-game-btn').addEventListener('click', () => enterGameMode('midi'));
             document.getElementById('start-kb-game-btn').addEventListener('click', () => enterGameMode('keyboard'));
             initializeKeybinds();
+            initializeSettingsSearch(); // --- ADD THIS LINE ---
+
 
             // --- NEW: Tutorial Event Listeners ---
             tutorialIcon.addEventListener('click', startTutorial);
