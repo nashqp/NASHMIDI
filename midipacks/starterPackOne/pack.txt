@@ -1,0 +1,17 @@
+Title: Starter Pack #1
+Description: Begin your journey.
+Genre: Romantic
+Difficulty: 0.5
+
+Author(s): NASHqp
+
+MIDIs:
+
+1: Fifths in C Major
+2: Naturalis in A minor
+3: Chloria in C Major
+4: Polyphonica in Bb Major
+5: Left Handed in F minor
+6: Right Handed in G Major
+
+© / NASHqp 2026
