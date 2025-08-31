@@ -1854,13 +1854,14 @@
                 <h2>Sync Calibration</h2>
                 <button id="reset-sync-btn" class="btn btn-secondary" style="margin-top: 0;">Reset</button>
             </div>
-            <div class="modal-body" id="sync-body">
+<div class="modal-body" id="sync-body">
                 <p id="sync-instructions">Press 'Begin Test' then tap any key on your MIDI device in time with the sound and visual pulse.</p>
                 <div id="sync-visualizer">
                     <div id="sync-bar"></div>
                     <div id="sync-marker"></div>
                 </div>
-                <div id="sync-results">
+<button id="sync-click-tap-btn" class="btn" style="width: 100%; margin-top: 5px;" disabled>Tap</button>
+<div id="sync-results">
                     <div id="sync-results-summary">
                          <p>Average Offset: <strong id="sync-avg-offset">-- ms</strong></p>
                          <p>Stability (Jitter): <strong id="sync-stability">-- ms</strong></p>
@@ -1959,6 +1960,13 @@
             const syncStartBtn = document.getElementById('sync-start-btn');
             const syncMarker = document.getElementById('sync-marker');
             const syncBar = document.getElementById('sync-bar');
+
+            // --- START OF ADDED CODE ---
+            const syncVisualizer = document.getElementById('sync-visualizer');
+const syncClickTapBtn = document.getElementById('sync-click-tap-btn');
+// A few already coded lines after -->
+            // --- END OF ADDED CODE ---
+
             const syncAvgOffset = document.getElementById('sync-avg-offset');
             const syncStability = document.getElementById('sync-stability');
             const syncInstructions = document.getElementById('sync-instructions');
@@ -2884,7 +2892,15 @@ async function initializeInstruments() {
 
 
             function handleGlobalKeydown(e) {
-                if (isListeningForKey || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON' || isSyncing) return;
+                if (isSyncing) {
+                    if (e.key === ' ') {
+                        e.preventDefault(); // Prevent page scroll
+                        handleSyncTap();
+                    }
+                    return; // Prevent other keys from working during sync
+                }
+// --- END OF ADDED CODE ---
+                if (isListeningForKey || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'BUTTON') return;
                 const lowerKey = e.key.toLowerCase();
                 
                 // --- NEW: Keyboard Game Input ---
@@ -5633,8 +5649,11 @@ const releaseTime = Tone.Transport.seconds;
                 applySyncBtn.disabled = true;
                 applySyncBtn.style.display = 'none';
                 syncStartBtn.style.display = 'inline-block';
-                syncInstructions.innerHTML = "Press 'Begin Test' then tap any key on your MIDI device in time with the sound and visual pulse.";
-                updateSyncPlot();
+// EDITED LINE
+                syncInstructions.innerHTML = "Press 'Begin Test' then tap a key, press <b>Space</b>, or use the <b>Tap Button</b> in time with the pulse.";
+// ADDED LINE
+                if(syncClickTapBtn) syncClickTapBtn.disabled = true;
+updateSyncPlot();
             }
 
             async function openSyncModal() {
@@ -5651,6 +5670,8 @@ const releaseTime = Tone.Transport.seconds;
 
             function startSync() {
                 syncStartBtn.style.display = 'none';
+                if(syncClickTapBtn) syncClickTapBtn.disabled = false;
+
                 isSyncing = true;
                 nextBeatTime = Tone.now() + SYNC_INTERVAL; 
 
@@ -5729,6 +5750,8 @@ const releaseTime = Tone.Transport.seconds;
 
             function finishSync() {
                 isSyncing = false;
+                if(syncClickTapBtn) syncClickTapBtn.disabled = true;
+
                 if(syncLoop) syncLoop.stop(0);
                 if (Tone.Transport.state === 'started') Tone.Transport.stop();
                 Tone.Transport.cancel();
@@ -5742,6 +5765,7 @@ const releaseTime = Tone.Transport.seconds;
 
             function endSync(shouldApply) {
                 isSyncing = false;
+
                 if(syncLoop) syncLoop.stop(0);
                 if(Tone.Transport.state === 'started') Tone.Transport.stop();
                 Tone.Transport.cancel();
@@ -6421,6 +6445,11 @@ const releaseTime = Tone.Transport.seconds;
                 resultsOverlay.classList.remove('visible');
                 gameSessionActive = false;
                 if (!isPlaying) {
+            syncVisualizer.addEventListener('pointerdown', () => {
+                if (isSyncing) {
+                    handleSyncTap();
+                }
+            });
                    togglePlayPause();
                 } else {
                     resetGame();
@@ -6432,6 +6461,15 @@ const releaseTime = Tone.Transport.seconds;
             resetSyncBtn.addEventListener('click', resetSyncUI);
             cancelSyncBtn.addEventListener('click', () => endSync(false));
             applySyncBtn.addEventListener('click', () => endSync(true));
+
+            syncClickTapBtn.addEventListener('click', () => {
+                if (isSyncing) {
+                    handleSyncTap();
+                    // Trigger visual feedback on the marker
+                    syncMarker.classList.add('hit');
+                    setTimeout(() => syncMarker.classList.remove('hit'), 200);
+                }
+            });
             
             // --- Initializations ---
             createPiano();
